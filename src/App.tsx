@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { VocabPost, ViewMode } from './types';
 import { INITIAL_POSTS } from './data/initialPosts';
 import { Header } from './components/Header';
@@ -238,6 +239,9 @@ export default function App() {
         onSelectPost={setActivePostId}
         onDeletePost={handleDeletePost}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
