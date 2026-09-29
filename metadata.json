@@ -1,0 +1,6 @@
+{
+  "name": "Lexicon Office: Daily 5 English Vocabulary",
+  "description": "Curated daily office English and workplace terminology with interactive cards, native audio pronunciation, smart post upload, and review flashcards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
