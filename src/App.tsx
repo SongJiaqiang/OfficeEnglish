@@ -13,6 +13,14 @@ import heroImage from './assets/images/office_editorial_desk_1790523820734.jpg';
 
 const STORAGE_KEY = 'lexicon_office_posts_v1';
 
+// Keep saved progress, and insert any seeded issues the browser has not seen yet.
+function withNewSeedPosts(stored: VocabPost[]): VocabPost[] {
+  const storedIds = new Set(stored.map((post) => post.id));
+  const missing = INITIAL_POSTS.filter((post) => !storedIds.has(post.id));
+  if (missing.length === 0) return stored;
+  return [...missing, ...stored].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+}
+
 export default function App() {
   const [posts, setPosts] = useState<VocabPost[]>(() => {
     try {
@@ -20,7 +28,7 @@ export default function App() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return withNewSeedPosts(parsed);
         }
       }
     } catch (e) {
