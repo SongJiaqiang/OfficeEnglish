@@ -111,7 +111,6 @@ export default function App() {
       <Header
         currentMode={currentMode}
         onSelectMode={setCurrentMode}
-        onOpenUpload={() => setIsUploadOpen(true)}
         onOpenArchive={() => setIsArchiveOpen(true)}
         totalPosts={posts.length}
       />
