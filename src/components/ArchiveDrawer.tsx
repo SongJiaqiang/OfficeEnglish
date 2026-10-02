@@ -134,7 +134,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                   </div>
 
                   {/* Delete button for user uploaded posts */}
-                  {onDeletePost && post.id.startsWith('post-') && post.id !== 'post-15' && post.id !== 'post-14' && post.id !== 'post-13' && post.id !== 'post-12' && post.id !== 'post-11' && (
+                  {onDeletePost && post.id.startsWith('post-') && post.id !== 'post-16' && post.id !== 'post-15' && post.id !== 'post-14' && post.id !== 'post-13' && post.id !== 'post-12' && post.id !== 'post-11' && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

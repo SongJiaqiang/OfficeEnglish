@@ -29,7 +29,7 @@ export default function App() {
     return INITIAL_POSTS;
   });
 
-  const [activePostId, setActivePostId] = useState<string>('post-15');
+  const [activePostId, setActivePostId] = useState<string>('post-16');
   const [currentMode, setCurrentMode] = useState<ViewMode>('card');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
