@@ -1,11 +1,10 @@
 import React from 'react';
 import { ViewMode } from '../types';
-import { Plus, BookOpen, Layers, CheckCircle2, Archive } from 'lucide-react';
+import { BookOpen, Layers, CheckCircle2, Archive } from 'lucide-react';
 
 interface HeaderProps {
   currentMode: ViewMode;
   onSelectMode: (mode: ViewMode) => void;
-  onOpenUpload: () => void;
   onOpenArchive: () => void;
   totalPosts: number;
 }
@@ -13,7 +12,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   currentMode,
   onSelectMode,
-  onOpenUpload,
   onOpenArchive,
   totalPosts,
 }) => {
@@ -80,17 +78,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="font-mono text-xs opacity-75 tabular-nums">({totalPosts})</span>
           </button>
         </nav>
-
-        {/* Zone 3: Primary Action */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onOpenUpload}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-medium text-stone-900 bg-amber-200 hover:bg-amber-300 border border-amber-300/80 rounded-md transition-colors shadow-sm whitespace-nowrap active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="font-semibold">New 5-Vocab Post</span>
-          </button>
-        </div>
       </div>
     </header>
   );
