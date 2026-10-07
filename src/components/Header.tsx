@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="text-left group cursor-pointer"
           >
             <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-stone-900 group-hover:text-amber-800 transition-colors">
-              Lexicon Office
+              Dev Lingo
             </span>
           </button>
         </div>

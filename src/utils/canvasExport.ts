@@ -60,7 +60,7 @@ export async function generateCardImage(post: VocabPost, options: RenderOptions)
   ctx.font = '600 13px system-ui, sans-serif';
   ctx.fillStyle = accentColor;
   ctx.letterSpacing = '2px';
-  ctx.fillText(`LEXICON OFFICE · ISSUE NO. ${post.issueNumber}`, 64, 82);
+  ctx.fillText(`DEV LINGO · ISSUE NO. ${post.issueNumber}`, 64, 82);
 
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.fillStyle = secondaryText;
@@ -157,7 +157,7 @@ export async function generateCardImage(post: VocabPost, options: RenderOptions)
   // Footer
   ctx.font = '500 12px system-ui, sans-serif';
   ctx.fillStyle = secondaryText;
-  ctx.fillText('LEXICON OFFICE · DAILY WORKPLACE ENGLISH DIGEST', 64, height - 52);
+  ctx.fillText('DEV LINGO · DAILY WORKPLACE ENGLISH DIGEST', 64, height - 52);
 
   ctx.textAlign = 'right';
   ctx.fillText('Generated with AI Studio', width - 64, height - 52);

@@ -74,7 +74,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   };
 
   const handleCopyMarkdown = () => {
-    const md = `### 📘 Lexicon Office · Issue #${post.issueNumber} (${post.formattedDate || post.date})
+    const md = `### 📘 Dev Lingo · Issue #${post.issueNumber} (${post.formattedDate || post.date})
 **${post.title}**
 
 ${post.items
@@ -84,7 +84,7 @@ ${post.items
   )
   .join('\n\n')}
 
-*Generated with Lexicon Office*`;
+*Generated with Dev Lingo*`;
 
     navigator.clipboard.writeText(md);
     setCopiedMd(true);
@@ -170,7 +170,7 @@ ${post.items
             <div className="max-w-md w-full rounded-xl overflow-hidden shadow-lg border border-stone-300">
               <img
                 src={imageUrl}
-                alt={`Lexicon Office Issue ${post.issueNumber}`}
+                alt={`Dev Lingo Issue ${post.issueNumber}`}
                 className="w-full h-auto object-contain block"
               />
             </div>
