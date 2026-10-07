@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { VocabPost, ViewMode } from './types';
-import { INITIAL_POSTS } from './data/initialPosts';
+import { applyMastery, loadPosts, masteredIdsFor, toggleMasteredId } from './lib/loadPosts';
 import { Header } from './components/Header';
 import { DailyPostCard } from './components/DailyPostCard';
 import { FlashcardStudy } from './components/FlashcardStudy';
@@ -11,46 +11,37 @@ import { ShareCardModal } from './components/ShareCardModal';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import heroImage from './assets/images/office_editorial_desk_1790523820734.jpg';
 
-const STORAGE_KEY = 'lexicon_office_posts_v1';
-
-// Keep saved progress, and insert any seeded issues the browser has not seen yet.
-function withNewSeedPosts(stored: VocabPost[]): VocabPost[] {
-  const storedIds = new Set(stored.map((post) => post.id));
-  const missing = INITIAL_POSTS.filter((post) => !storedIds.has(post.id));
-  if (missing.length === 0) return stored;
-  return [...missing, ...stored].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
-}
-
 export default function App() {
-  const [posts, setPosts] = useState<VocabPost[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return withNewSeedPosts(parsed);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load posts from storage:', e);
-    }
-    return INITIAL_POSTS;
-  });
-
-  const [activePostId, setActivePostId] = useState<string>('post-21');
+  const [posts, setPosts] = useState<VocabPost[]>([]);
+  const [activePostId, setActivePostId] = useState<string>('');
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [loadError, setLoadError] = useState('');
   const [currentMode, setCurrentMode] = useState<ViewMode>('card');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
-  // Sync to localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-    } catch (e) {
-      console.error('Failed to save posts to storage:', e);
-    }
-  }, [posts]);
+    let cancelled = false;
+
+    loadPosts()
+      .then((loaded) => {
+        if (cancelled) return;
+        const withMastery = applyMastery(loaded, masteredIdsFor(loaded));
+        setPosts(withMastery);
+        setActivePostId(withMastery[0]?.id ?? '');
+        setLoadState('ready');
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        setLoadError(error instanceof Error ? error.message : 'Failed to load posts');
+        setLoadState('error');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Current active post
   const activePost = posts.find((p) => p.id === activePostId) || posts[0];
@@ -74,19 +65,8 @@ export default function App() {
 
   // Toggle mastered status for an item
   const handleToggleMastered = (itemId: string) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) => {
-        const hasItem = post.items.some((i) => i.id === itemId);
-        if (!hasItem) return post;
-
-        return {
-          ...post,
-          items: post.items.map((i) =>
-            i.id === itemId ? { ...i, isMastered: !i.isMastered } : i
-          ),
-        };
-      })
-    );
+    const masteredIds = toggleMasteredId(itemId);
+    setPosts((prevPosts) => applyMastery(prevPosts, masteredIds));
   };
 
   // Save new post from upload modal
@@ -163,6 +143,18 @@ export default function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        {loadState === 'loading' && (
+          <p className="text-sm text-stone-500">Loading today’s words…</p>
+        )}
+
+        {loadState === 'error' && (
+          <p className="text-sm text-stone-700">Couldn’t load posts. {loadError}</p>
+        )}
+
+        {loadState === 'ready' && posts.length === 0 && (
+          <p className="text-sm text-stone-500">No posts yet.</p>
+        )}
+
         {currentMode === 'card' && activePost && (
           <DailyPostCard
             post={activePost}
