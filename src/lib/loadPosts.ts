@@ -1,6 +1,7 @@
+import { INITIAL_POSTS } from '../data/initialPosts';
 import { VocabItem, VocabPost } from '../types';
 import { formatDateString } from '../utils/parser';
-import { createSupabaseClient } from './supabase';
+import { createSupabaseClient, isSupabaseConfigured } from './supabase';
 
 const MASTERED_KEY = 'devlingo_mastered_vocab_ids';
 const LEGACY_POSTS_KEY = 'lexicon_office_posts_v1';
@@ -138,6 +139,15 @@ function mapPost(row: DailyPostRow): VocabPost {
 }
 
 export async function loadPosts(): Promise<VocabPost[]> {
+  // Production was shipping without Vite Supabase env vars baked in.
+  // Keep the homepage usable from the seeded catalog until keys are set.
+  if (!isSupabaseConfigured()) {
+    return INITIAL_POSTS.map((post) => ({
+      ...post,
+      items: post.items.map((item) => ({ ...item })),
+    }));
+  }
+
   const supabase = createSupabaseClient();
   const { data, error } = await supabase
     .from('daily_posts')
