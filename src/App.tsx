@@ -189,7 +189,7 @@ export default function App() {
       <footer className="border-t border-stone-200/80 bg-white py-8 px-4 sm:px-6 text-stone-500 text-xs">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-serif font-bold text-stone-900 text-sm">Lexicon Office</span>
+            <span className="font-serif font-bold text-stone-900 text-sm">Dev Lingo</span>
             <span>·</span>
             <span>Curated Workplace & Tech English</span>
           </div>
