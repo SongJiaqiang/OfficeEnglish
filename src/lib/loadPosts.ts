@@ -1,5 +1,6 @@
 import { INITIAL_POSTS } from '../data/initialPosts';
 import { VocabItem, VocabPost } from '../types';
+import { optionalText, parseStoryType } from '../utils/lesson';
 import { formatDateString } from '../utils/parser';
 import { createSupabaseClient, isSupabaseConfigured } from './supabase';
 
@@ -27,6 +28,10 @@ interface DailyPostRow {
   post_date: string;
   title: string;
   description: string | null;
+  scene: string | null;
+  story_type: string | null;
+  story: string | null;
+  practice_prompt: string | null;
   created_at: string;
   daily_post_items: DailyItemRow[] | null;
 }
@@ -126,6 +131,11 @@ function mapPost(row: DailyPostRow): VocabPost {
       return vocab ? [vocabFromRow(vocab)] : [];
     });
 
+  const scene = optionalText(row.scene);
+  const story = optionalText(row.story);
+  const practicePrompt = optionalText(row.practice_prompt);
+  const storyType = parseStoryType(row.story_type);
+
   return {
     id: row.id,
     title: row.title,
@@ -133,19 +143,31 @@ function mapPost(row: DailyPostRow): VocabPost {
     date: row.post_date,
     formattedDate: formatDateString(row.post_date),
     description: row.description ?? undefined,
+    ...(scene ? { scene } : {}),
+    ...(story ? { story } : {}),
+    ...(storyType ? { storyType } : {}),
+    ...(practicePrompt ? { practicePrompt } : {}),
     items,
     createdAt: new Date(row.created_at).getTime(),
   };
 }
 
-export async function loadPosts(): Promise<VocabPost[]> {
+function clonePosts(posts: VocabPost[]): VocabPost[] {
+  return posts.map((post) => ({
+    ...post,
+    items: post.items.map((item) => ({ ...item })),
+  }));
+}
+
+function lessonPreviewRequested(): boolean {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === 'lessons';
+}
+
+async function loadCatalog(): Promise<VocabPost[]> {
   // Production was shipping without Vite Supabase env vars baked in.
   // Keep the homepage usable from the seeded catalog until keys are set.
   if (!isSupabaseConfigured()) {
-    return INITIAL_POSTS.map((post) => ({
-      ...post,
-      items: post.items.map((item) => ({ ...item })),
-    }));
+    return clonePosts(INITIAL_POSTS);
   }
 
   const supabase = createSupabaseClient();
@@ -158,6 +180,10 @@ export async function loadPosts(): Promise<VocabPost[]> {
       post_date,
       title,
       description,
+      scene,
+      story_type,
+      story,
+      practice_prompt,
       created_at,
       daily_post_items (
         position,
@@ -180,4 +206,15 @@ export async function loadPosts(): Promise<VocabPost[]> {
   }
 
   return ((data ?? []) as DailyPostRow[]).map(mapPost);
+}
+
+export async function loadPosts(): Promise<VocabPost[]> {
+  const posts = await loadCatalog();
+  // Dev-only samples for the coffee lesson layout. The seeded catalog is unchanged
+  // unless this query is present, and the import is dropped from production builds.
+  if (import.meta.env.DEV && lessonPreviewRequested()) {
+    const { LESSON_PREVIEW_POSTS } = await import('../data/lessonPreviewPosts');
+    return [...clonePosts(LESSON_PREVIEW_POSTS), ...posts];
+  }
+  return posts;
 }
