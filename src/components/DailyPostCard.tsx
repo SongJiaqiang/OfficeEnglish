@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { VocabPost, ViewMode } from '../types';
+import { LessonSections } from './LessonSections';
 import { VocabCard } from './VocabCard';
 import {
   Share2,
@@ -207,6 +208,8 @@ export const DailyPostCard: React.FC<DailyPostCardProps> = ({
             </div>
           </div>
         </header>
+
+        <LessonSections post={post} />
 
         {/* 5 Vocabulary Cards List */}
         <section aria-label="Vocabulary Cards" className="space-y-4">

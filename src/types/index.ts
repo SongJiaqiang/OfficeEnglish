@@ -9,6 +9,8 @@ export interface VocabItem {
   isMastered?: boolean;
 }
 
+export type StoryType = 'dialogue' | 'monologue' | 'document';
+
 export interface VocabPost {
   id: string;
   title: string;
@@ -16,6 +18,12 @@ export interface VocabPost {
   date: string; // ISO date string YYYY-MM-DD or raw YYYYMMDD
   formattedDate: string; // e.g. "Sep 27, 2026"
   description?: string;
+  /** Short scene-setting paragraph. May include Chinese. */
+  scene?: string;
+  storyType?: StoryType;
+  /** Multi-line lesson text. Dialogue lines look like `Lena: Okay, sprint planning...`. */
+  story?: string;
+  practicePrompt?: string;
   items: VocabItem[];
   createdAt: number;
 }
