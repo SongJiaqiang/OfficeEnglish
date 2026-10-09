@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { VocabPost, ViewMode } from '../types';
-import { LessonSections } from './LessonSections';
 import { VocabCard } from './VocabCard';
+import { SceneDialogue } from './SceneDialogue';
 import {
   Share2,
   Copy,
@@ -209,8 +209,6 @@ export const DailyPostCard: React.FC<DailyPostCardProps> = ({
           </div>
         </header>
 
-        <LessonSections post={post} />
-
         {/* 5 Vocabulary Cards List */}
         <section aria-label="Vocabulary Cards" className="space-y-4">
           {post.items.map((item, index) => (
@@ -222,6 +220,14 @@ export const DailyPostCard: React.FC<DailyPostCardProps> = ({
             />
           ))}
         </section>
+
+        <SceneDialogue
+          scene={post.scene}
+          story={post.story}
+          storyType={post.storyType}
+          practicePrompt={post.practicePrompt}
+          terms={post.items.map((item) => item.term)}
+        />
 
         {/* Card Footer / Study Modes CTAs */}
         <footer className="mt-8 pt-6 border-t border-stone-200 flex flex-wrap items-center justify-between gap-4">
