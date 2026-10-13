@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { VocabPost, VocabItem } from '../types';
 import { CheckCircle2, XCircle, RefreshCw, ArrowLeft, Trophy, Sparkles } from 'lucide-react';
+import { TranslationToggle } from './TranslationToggle';
 
 interface QuizModeProps {
   post: VocabPost;
@@ -39,7 +40,7 @@ export const QuizMode: React.FC<QuizModeProps> = ({
         return {
           id: `q-${index}`,
           type: 'meaning',
-          prompt: `Which office vocabulary means: "${item.meaningEn}" (${item.meaningZh})?`,
+          prompt: `Which office vocabulary means: "${item.meaningEn}"?`,
           targetItem: item,
           options: allOptions,
         };
@@ -180,9 +181,12 @@ export const QuizMode: React.FC<QuizModeProps> = ({
           <span className="text-xs uppercase tracking-wider text-amber-800 font-semibold font-mono bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60 inline-block mb-3">
             {currentQ.type === 'scenario' ? 'Office Context Match' : 'Definition Match'}
           </span>
-          <h2 className="text-lg sm:text-xl font-medium text-stone-900 leading-relaxed font-serif">
-            {currentQ.prompt}
-          </h2>
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="text-lg sm:text-xl font-medium text-stone-900 leading-relaxed font-serif">
+              {currentQ.prompt}
+            </h2>
+            <TranslationToggle text={currentQ.targetItem.meaningZh} />
+          </div>
         </div>
 
         {/* Options */}
@@ -204,13 +208,16 @@ export const QuizMode: React.FC<QuizModeProps> = ({
             }
 
             return (
-              <button
+              <div
                 key={option.id}
-                onClick={() => handleSelectOption(option)}
-                disabled={isAnswered}
                 className={`w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${buttonStyle}`}
               >
-                <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleSelectOption(option)}
+                  disabled={isAnswered}
+                  className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                >
                   <span className="font-mono text-xs font-semibold text-stone-400 tabular-nums">
                     {String.fromCharCode(65 + idx)}.
                   </span>
@@ -218,11 +225,14 @@ export const QuizMode: React.FC<QuizModeProps> = ({
                     <div className="font-bold text-base text-stone-900">
                       {option.term}
                     </div>
-                    <div className="text-xs text-stone-500 font-normal">
-                      {option.meaningZh} {option.phonetic}
-                    </div>
+                    {option.phonetic && (
+                      <div className="text-xs text-stone-500 font-normal">
+                        {option.phonetic}
+                      </div>
+                    )}
                   </div>
-                </div>
+                </button>
+                <TranslationToggle text={option.meaningZh} />
 
                 {isAnswered && isTarget && (
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -230,7 +240,7 @@ export const QuizMode: React.FC<QuizModeProps> = ({
                 {isAnswered && isSelected && !isTarget && (
                   <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
                 )}
-              </button>
+              </div>
             );
           })}
         </div>

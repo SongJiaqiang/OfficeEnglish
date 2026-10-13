@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StoryType } from '../types';
 import { storySectionTitle } from '../utils/lesson';
+import { TranslationIconButton } from './TranslationToggle';
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -50,6 +51,7 @@ export const SceneDialogue: React.FC<SceneDialogueProps> = ({
   practicePrompt,
   terms,
 }) => {
+  const [sceneTranslationOpen, setSceneTranslationOpen] = useState(false);
   if (!scene && !story && !practicePrompt) return null;
 
   const sceneParts = scene ? splitScene(scene) : null;
@@ -60,11 +62,19 @@ export const SceneDialogue: React.FC<SceneDialogueProps> = ({
     <section className="mt-8 space-y-4" aria-label="Scene and dialogue">
       {sceneParts && (
         <div className="rounded-xl border border-stone-200 bg-white p-5 sm:p-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">Scene</h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">Scene</h2>
+            {sceneParts.chinese && (
+              <TranslationIconButton
+                pressed={sceneTranslationOpen}
+                onClick={() => setSceneTranslationOpen((open) => !open)}
+              />
+            )}
+          </div>
           <p className="mt-2 font-serif text-base sm:text-lg leading-relaxed text-stone-900">
             {sceneParts.english}
           </p>
-          {sceneParts.chinese && (
+          {sceneParts.chinese && sceneTranslationOpen && (
             <p className="mt-1.5 text-sm leading-relaxed text-stone-500">{sceneParts.chinese}</p>
           )}
         </div>
