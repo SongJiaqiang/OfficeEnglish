@@ -13,6 +13,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { AudioEngine } from '../utils/speech';
+import { TranslationToggle } from './TranslationToggle';
 
 interface FlashcardStudyProps {
   post: VocabPost;
@@ -209,9 +210,7 @@ export const FlashcardStudy: React.FC<FlashcardStudyProps> = ({
                   {currentItem.phonetic}
                 </span>
               </div>
-              <span className="bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded text-sm">
-                {currentItem.meaningZh}
-              </span>
+              <TranslationToggle text={currentItem.meaningZh} />
             </div>
 
             <div className="my-auto space-y-5">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { VocabItem } from '../types';
 import { Volume2, VolumeX, Check, Copy } from 'lucide-react';
+import { TranslationToggle } from './TranslationToggle';
 import { AudioEngine } from '../utils/speech';
 
 interface VocabCardProps {
@@ -132,10 +133,7 @@ export const VocabCard: React.FC<VocabCardProps> = ({
               </span>
             )}
 
-            {/* Chinese definition */}
-            <span className="font-sans text-sm font-semibold text-amber-900 bg-amber-50/80 px-2.5 py-0.5 rounded border border-amber-200/60">
-              {item.meaningZh}
-            </span>
+            <TranslationToggle text={item.meaningZh} />
 
             {/* Copy button */}
             <button
